@@ -2,7 +2,7 @@ name: Daily Job Check
 
 on:
   schedule:
-    - cron: "0 8 * * 1-5"   # 08:00 UTC Mon–Fri (adjust to taste)
+    - cron: "0 10 * * 1-5"   # 10:00 UTC Mon–Fri (adjust to taste)
   workflow_dispatch:          # allows manual trigger from GitHub UI
 
 jobs:
