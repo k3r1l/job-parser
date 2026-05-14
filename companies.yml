@@ -50,6 +50,7 @@ companies:
 
   - name: "Wise"
     url: "https://wise.jobs/jobs"
+    max_pages: 5
 
   - name: "Starling Bank"
     url: "https://apply.workable.com/starling-bank/"

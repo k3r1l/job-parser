@@ -61,34 +61,53 @@ def fetch_page(url: str, company: str, retries: int = 3) -> BeautifulSoup | None
     return None
 
 
-def parse_generic(company: str, url: str) -> tuple[list[Job], bool]:
+def parse_generic(company: str, url: str, max_pages: int = 1) -> tuple[list[Job], bool]:
     """
     Fallback scraper: walks all <a> tags and returns those matching the DS/ML
     keyword list. Returns (jobs, fetch_succeeded).
-    """
-    soup = fetch_page(url, company)
-    if soup is None:
-        return [], False
 
+    max_pages > 1 enables simple ?page=N pagination for sites like Wise that
+    spread listings across multiple pages.
+    """
     jobs: list[Job] = []
     seen_urls: set[str] = set()
 
-    for tag in soup.find_all("a", href=True):
-        text = tag.get_text(" ", strip=True)
-        href = tag["href"]
+    for page in range(1, max_pages + 1):
+        sep = "&" if "?" in url else "?"
+        page_url = url if page == 1 else f"{url}{sep}page={page}"
 
-        if not text or len(text) < 5:
-            continue
+        soup = fetch_page(page_url, company)
+        if soup is None:
+            return ([], False) if page == 1 else (jobs, True)
 
-        if not href.startswith("http"):
-            href = urljoin(url, href)
+        links_on_page = 0
+        for tag in soup.find_all("a", href=True):
+            text = tag.get_text(" ", strip=True)
+            href = tag["href"]
 
-        if href in seen_urls:
-            continue
+            if not text or len(text) < 5:
+                continue
 
-        if is_relevant_title(text) and is_uk_relevant(text):
-            jobs.append(Job(title=text, url=href, company=company))
-            seen_urls.add(href)
+            if not href.startswith("http"):
+                href = urljoin(url, href)
 
-    logger.info("%s — generic parser found %d relevant job(s)", company, len(jobs))
+            if href in seen_urls:
+                continue
+
+            links_on_page += 1
+            if is_relevant_title(text) and is_uk_relevant(text):
+                jobs.append(Job(title=text, url=href, company=company))
+                seen_urls.add(href)
+
+        logger.info(
+            "%s — page %d/%d: %d link(s), %d relevant so far",
+            company, page, max_pages, links_on_page, len(jobs),
+        )
+
+        if links_on_page == 0:
+            break  # past the last page
+
+        if page < max_pages:
+            time.sleep(1.0)  # polite delay between pages of the same site
+
     return jobs, True

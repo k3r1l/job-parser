@@ -91,3 +91,43 @@ class TestParseGeneric:
         with patch("src.parsers.base.fetch_page", return_value=soup):
             jobs, _ = parse_generic("TestCo", "https://testco.com/careers")
         assert jobs[0].url.startswith("https://testco.com")
+
+
+class TestPagination:
+    def test_fetches_multiple_pages(self):
+        page1 = BeautifulSoup('<a href="/j/senior-data-scientist-p1">Senior Data Scientist P1</a>', "lxml")
+        page2 = BeautifulSoup('<a href="/j/lead-data-scientist-p2">Lead Data Scientist P2</a>', "lxml")
+        empty = BeautifulSoup("", "lxml")
+        with patch("src.parsers.base.fetch_page", side_effect=[page1, page2, empty]):
+            with patch("src.parsers.base.time.sleep"):
+                jobs, ok = parse_generic("TestCo", "https://testco.com/jobs", max_pages=5)
+        assert ok is True
+        assert len(jobs) == 2
+
+    def test_stops_at_empty_page(self):
+        page1 = BeautifulSoup('<a href="/j/senior-data-scientist">Senior Data Scientist</a>', "lxml")
+        empty = BeautifulSoup("", "lxml")
+        with patch("src.parsers.base.fetch_page", side_effect=[page1, empty]) as mock_fetch:
+            with patch("src.parsers.base.time.sleep"):
+                jobs, _ = parse_generic("TestCo", "https://testco.com/jobs", max_pages=10)
+        assert mock_fetch.call_count == 2  # stopped after empty page 2
+
+    def test_page_url_appends_correctly(self):
+        # page 1 has a non-relevant link (so scraper continues), page 2 is empty
+        nonjob = BeautifulSoup('<a href="/about">About us</a>', "lxml")
+        empty = BeautifulSoup("", "lxml")
+        with patch("src.parsers.base.fetch_page", side_effect=[nonjob, empty]) as mock_fetch:
+            with patch("src.parsers.base.time.sleep"):
+                parse_generic("TestCo", "https://testco.com/jobs", max_pages=3)
+        called_urls = [call[0][0] for call in mock_fetch.call_args_list]
+        assert called_urls[0] == "https://testco.com/jobs"
+        assert called_urls[1] == "https://testco.com/jobs?page=2"
+
+    def test_page_url_with_existing_params(self):
+        nonjob = BeautifulSoup('<a href="/about">About us</a>', "lxml")
+        empty = BeautifulSoup("", "lxml")
+        with patch("src.parsers.base.fetch_page", side_effect=[nonjob, empty]) as mock_fetch:
+            with patch("src.parsers.base.time.sleep"):
+                parse_generic("TestCo", "https://testco.com/jobs?team=data", max_pages=2)
+        called_urls = [call[0][0] for call in mock_fetch.call_args_list]
+        assert called_urls[1] == "https://testco.com/jobs?team=data&page=2"

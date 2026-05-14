@@ -52,7 +52,8 @@ def run() -> None:
         if i > 0:
             time.sleep(BETWEEN_COMPANIES_DELAY)
 
-        jobs, fetch_ok = parse_generic(name, url)
+        max_pages: int = cfg.get("max_pages", 1)
+        jobs, fetch_ok = parse_generic(name, url, max_pages=max_pages)
         if not fetch_ok:
             fetch_failed.append(name)
             logger.warning("Skipping %s — page unreachable after all retries", name)
