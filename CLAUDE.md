@@ -2,7 +2,7 @@
 
 ## What this is
 
-A daily job parser that monitors company career pages for new Data Scientist / ML roles in London, then sends Telegram notifications. Runs on GitHub Actions Mon–Fri at 08:00 UTC.
+A daily job parser that monitors company career pages for new Data Scientist / ML roles in London, then sends Telegram notifications. Runs on GitHub Actions Mon–Fri at 10:00 UTC.
 
 **Target roles:** middle / senior / lead Data Scientist (and related: ML Engineer, Analytics Engineer)
 **Target location:** London, UK (remote/hybrid acceptable)
