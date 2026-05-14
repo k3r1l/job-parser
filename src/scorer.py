@@ -1,6 +1,7 @@
 import logging
 import time
 
+from src.filters import is_uk_relevant
 from src.parsers.base import fetch_page
 
 _DESCRIPTION_FETCH_DELAY = 0.5  # seconds between job detail page requests
@@ -76,9 +77,11 @@ def score_job(job: dict) -> dict:
     skill_hits = [kw for kw in _SKILL_KEYWORDS if kw in full_text]
     score += min(len(skill_hits) // 2, 2)
 
-    # No location signal — mild penalty
-    if not any(loc in full_text for loc in _LOCATION_KEYWORDS):
-        score -= 1
+    # Location check: hard penalty for explicit non-UK city, mild for no signal
+    if not is_uk_relevant(full_text[:500]):
+        score -= 5  # explicit non-UK location in description → push below threshold
+    elif not any(loc in full_text for loc in _LOCATION_KEYWORDS):
+        score -= 1  # no location signal at all
 
     job["score"] = max(1, min(10, score))
     job["score_keywords"] = (domain_hits + skill_hits)[:6]

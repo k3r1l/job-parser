@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 
-from src.filters import is_relevant_title
+from src.filters import is_relevant_title, is_uk_relevant
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ def parse_generic(company: str, url: str) -> tuple[list[Job], bool]:
         if href in seen_urls:
             continue
 
-        if is_relevant_title(text):
+        if is_relevant_title(text) and is_uk_relevant(text):
             jobs.append(Job(title=text, url=href, company=company))
             seen_urls.add(href)
 

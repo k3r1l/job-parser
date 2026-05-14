@@ -1,4 +1,4 @@
-from src.filters import is_relevant_location, is_relevant_title
+from src.filters import is_relevant_location, is_relevant_title, is_uk_relevant
 
 
 class TestIsRelevantTitle:
@@ -36,3 +36,32 @@ class TestIsRelevantLocation:
 
     def test_no_match(self):
         assert not is_relevant_location("New York, USA")
+
+
+class TestIsUkRelevant:
+    def test_london_passes(self):
+        assert is_uk_relevant("Senior Data Scientist London, UK")
+
+    def test_uk_remote_passes(self):
+        assert is_uk_relevant("Lead ML Engineer Cardiff, London or Remote (UK)")
+
+    def test_no_location_passes(self):
+        assert is_uk_relevant("Senior Data Scientist")
+
+    def test_san_francisco_rejected(self):
+        assert not is_uk_relevant("ML Engineer San Francisco, CA")
+
+    def test_riga_rejected(self):
+        assert not is_uk_relevant("Senior Data Scientist Riga, Latvia")
+
+    def test_lisbon_rejected(self):
+        assert not is_uk_relevant("Senior Data Scientist Lisbon, Portugal")
+
+    def test_sunnyvale_rejected(self):
+        assert not is_uk_relevant("Staff Data Scientist Sunnyvale, California USA")
+
+    def test_barcelona_rejected(self):
+        assert not is_uk_relevant("Lead Data Scientist Barcelona")
+
+    def test_united_states_rejected(self):
+        assert not is_uk_relevant("Senior DS United States, Los Angeles, CA")

@@ -33,13 +33,15 @@ companies:
   - name: "Amazon"
     url: "https://www.amazon.jobs/en/search?base_query=data+scientist&loc_query=London%2C+England%2C+United+Kingdom&location_id=GBR"
 
-  - name: "Uber"
-    url: "https://www.uber.com/us/en/careers/locations/london"
+  # Uber: JS-rendered (React SPA) — generic scraper cannot load job listings
+  # - name: "Uber"
+  #   url: "https://www.uber.com/us/en/careers/locations/london"
 
   # --- Requested: banks / financial ---
 
-  - name: "Citi"
-    url: "https://jobs.citi.com/search-results?keyword=data+scientist&location=London"
+  # Citi: JS-rendered (Eightfold AI) — generic scraper cannot load job listings
+  # - name: "Citi"
+  #   url: "https://jobs.citi.com/search-results?keyword=data+scientist&location=London"
 
   # --- Additional: fintech ---
 
@@ -76,8 +78,9 @@ companies:
   - name: "JPMorgan"
     url: "https://careers.jpmorgan.com/us/en/jobs/uk"
 
-  - name: "Bloomberg"
-    url: "https://careers.bloomberg.com/job/search"
+  # Bloomberg: JS-rendered (Avature) — generic scraper cannot load job listings
+  # - name: "Bloomberg"
+  #   url: "https://careers.bloomberg.com/job/search"
 
   # --- Additional: big tech ---
 
@@ -115,7 +118,7 @@ companies:
     url: "https://jobs.ocadogroup.com/"
 
   - name: "BenevolentAI"
-    url: "https://boards.greenhouse.io/benevolentai"
+    url: "https://job-boards.greenhouse.io/benevolentai"
     parser: greenhouse
 
   # --- New additions: fintech / BNPL ---
@@ -211,8 +214,9 @@ companies:
   - name: "Lloyds Banking Group"
     url: "https://lbg.wd3.myworkdayjobs.com/LBG_Careers"
 
-  - name: "NatWest Group"
-    url: "https://jobs.natwestgroup.com/search/jobs"
+  # NatWest Group: Workday (JS-rendered) — generic scraper cannot load job listings
+  # - name: "NatWest Group"
+  #   url: "https://jobs.natwestgroup.com/search/jobs"
 
   - name: "Santander UK"
     url: "https://santander.wd3.myworkdayjobs.com/en/SantanderCareers"
@@ -238,8 +242,9 @@ companies:
   - name: "Macquarie"
     url: "https://recruitment.macquarie.com/en_US/careers/SearchJobs"
 
-  - name: "BNP Paribas"
-    url: "https://group.bnpparibas/en/careers/all-job-offers/london"
+  # BNP Paribas: bot protection / access restrictions on their careers page
+  # - name: "BNP Paribas"
+  #   url: "https://group.bnpparibas/en/careers/all-job-offers/london"
 
   # --- Credit bureaus / data-driven finance (strong profile match) ---
 
