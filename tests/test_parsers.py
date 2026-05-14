@@ -131,3 +131,13 @@ class TestPagination:
                 parse_generic("TestCo", "https://testco.com/jobs?team=data", max_pages=2)
         called_urls = [call[0][0] for call in mock_fetch.call_args_list]
         assert called_urls[1] == "https://testco.com/jobs?team=data&page=2"
+
+    def test_stops_when_page_fingerprint_repeats(self):
+        # Same HTML on page 1 and page 2 — site ignores ?page=N
+        same = BeautifulSoup('<a href="/j/senior-data-scientist">Senior Data Scientist</a>', "lxml")
+        with patch("src.parsers.base.fetch_page", side_effect=[same, same, same]) as mock_fetch:
+            with patch("src.parsers.base.time.sleep"):
+                jobs, ok = parse_generic("TestCo", "https://testco.com/jobs", max_pages=10)
+        assert ok is True
+        assert mock_fetch.call_count == 2  # fetched page 1 + page 2 (duplicate), then stopped
+        assert len(jobs) == 1  # job from page 1 counted once

@@ -61,16 +61,29 @@ def fetch_page(url: str, company: str, retries: int = 3) -> BeautifulSoup | None
     return None
 
 
-def parse_generic(company: str, url: str, max_pages: int = 1) -> tuple[list[Job], bool]:
+def _page_fingerprint(soup: BeautifulSoup) -> str:
+    """MD5 of the sorted set of all hrefs — detects pages that ignore ?page=N."""
+    hrefs = sorted({tag["href"] for tag in soup.find_all("a", href=True)})
+    return hashlib.md5("\n".join(hrefs).encode()).hexdigest()
+
+
+_MAX_PAGES_CEILING = 25  # safety cap — fingerprint/empty-page detection stops earlier in practice
+
+
+def parse_generic(company: str, url: str, max_pages: int = _MAX_PAGES_CEILING) -> tuple[list[Job], bool]:
     """
     Fallback scraper: walks all <a> tags and returns those matching the DS/ML
     keyword list. Returns (jobs, fetch_succeeded).
 
-    max_pages > 1 enables simple ?page=N pagination for sites like Wise that
-    spread listings across multiple pages.
+    Stops early when:
+    - a page has no links at all (past the last real page), or
+    - a page's link fingerprint matches the previous page (pagination ignored).
+    max_pages is a safety ceiling only — tune it upward if a board genuinely
+    has more pages, but don't set it low to control scraping depth.
     """
     jobs: list[Job] = []
     seen_urls: set[str] = set()
+    prev_fingerprint: str | None = None
 
     for page in range(1, max_pages + 1):
         sep = "&" if "?" in url else "?"
@@ -79,6 +92,12 @@ def parse_generic(company: str, url: str, max_pages: int = 1) -> tuple[list[Job]
         soup = fetch_page(page_url, company)
         if soup is None:
             return ([], False) if page == 1 else (jobs, True)
+
+        fingerprint = _page_fingerprint(soup)
+        if page > 1 and fingerprint == prev_fingerprint:
+            logger.info("%s — page %d has same content as previous page, stopping", company, page)
+            break
+        prev_fingerprint = fingerprint
 
         links_on_page = 0
         for tag in soup.find_all("a", href=True):

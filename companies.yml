@@ -1,6 +1,8 @@
 # Job boards to monitor daily.
 # 'parser' key is reserved for company-specific parsers (not yet built).
 # Generic link scraper is used for all entries until a custom parser exists.
+# max_pages is a safety ceiling only — scraper stops automatically when pages
+# repeat or return no links, so this rarely needs tuning.
 
 companies:
 
@@ -50,7 +52,6 @@ companies:
 
   - name: "Wise"
     url: "https://wise.jobs/jobs"
-    max_pages: 5
 
   - name: "Starling Bank"
     url: "https://apply.workable.com/starling-bank/"
