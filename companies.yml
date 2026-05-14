@@ -1,0 +1,262 @@
+# Job boards to monitor daily.
+# 'parser' key is reserved for company-specific parsers (not yet built).
+# Generic link scraper is used for all entries until a custom parser exists.
+
+companies:
+
+  # --- Requested: product / tech companies ---
+
+  - name: "Monzo"
+    url: "https://job-boards.greenhouse.io/monzo"
+    parser: greenhouse
+
+  - name: "Klarna"
+    url: "https://www.klarna.com/careers/openings/"
+
+  - name: "Cleo"
+    url: "https://apply.workable.com/cleo-ai/"
+    parser: workable
+
+  - name: "Deliveroo"
+    url: "https://careers.deliveroo.co.uk/"
+
+  - name: "Flo Health"
+    url: "https://job-boards.greenhouse.io/flohealth"
+    parser: greenhouse
+
+  - name: "Google DeepMind"
+    url: "https://deepmind.google/careers/"
+
+  - name: "Apple"
+    url: "https://jobs.apple.com/en-us/search?location=london-LND"
+
+  - name: "Amazon"
+    url: "https://www.amazon.jobs/en/search?base_query=data+scientist&loc_query=London%2C+England%2C+United+Kingdom&location_id=GBR"
+
+  - name: "Uber"
+    url: "https://www.uber.com/us/en/careers/locations/london"
+
+  # --- Requested: banks / financial ---
+
+  - name: "Citi"
+    url: "https://jobs.citi.com/search-results?keyword=data+scientist&location=London"
+
+  # --- Additional: fintech ---
+
+  - name: "Revolut"
+    url: "https://www.revolut.com/careers/team/engineering-data/"
+
+  - name: "Wise"
+    url: "https://wise.jobs/jobs"
+
+  - name: "Starling Bank"
+    url: "https://apply.workable.com/starling-bank/"
+    parser: workable
+
+  - name: "Checkout.com"
+    url: "https://www.checkout.com/jobs"
+
+  - name: "iwoca"
+    url: "https://jobs.ashbyhq.com/iwoca.co.uk"
+
+  - name: "Funding Circle"
+    url: "https://careers.fundingcircle.com/"
+
+  # --- Additional: major banks ---
+
+  - name: "HSBC"
+    url: "https://mycareer.hsbc.com/en_GB/external/SearchJobs"
+
+  - name: "Barclays"
+    url: "https://search.jobs.barclays/search-jobs"
+
+  - name: "Goldman Sachs"
+    url: "https://higher.gs.com/"
+
+  - name: "JPMorgan"
+    url: "https://careers.jpmorgan.com/us/en/jobs/uk"
+
+  - name: "Bloomberg"
+    url: "https://careers.bloomberg.com/job/search"
+
+  # --- Additional: big tech ---
+
+  - name: "Microsoft"
+    url: "https://jobs.careers.microsoft.com/global/en/search?q=data+scientist&lc=London%2C+United+Kingdom"
+
+  - name: "Meta"
+    url: "https://www.metacareers.com/locations/london"
+
+  - name: "Spotify"
+    url: "https://www.lifeatspotify.com/job-categories/data-research-insights"
+
+  - name: "Palantir"
+    url: "https://www.palantir.com/careers/open-positions/"
+
+  # --- Additional: AI / ML focused ---
+
+  - name: "Wayve"
+    url: "https://boards.greenhouse.io/wayve"
+    parser: greenhouse
+
+  - name: "Tractable"
+    url: "https://tractable.ai/careers/"
+
+  - name: "Faculty AI"
+    url: "https://faculty.ai/careers/"
+
+  - name: "Anthropic"
+    url: "https://job-boards.greenhouse.io/anthropic"
+    parser: greenhouse
+
+  # --- Additional: other London tech / data-heavy companies ---
+
+  - name: "Ocado Technology"
+    url: "https://jobs.ocadogroup.com/"
+
+  - name: "BenevolentAI"
+    url: "https://boards.greenhouse.io/benevolentai"
+    parser: greenhouse
+
+  # --- New additions: fintech / BNPL ---
+
+  - name: "Zilch"
+    url: "https://jobs.ashbyhq.com/zilch"
+    parser: ashby
+
+  - name: "Marshmallow"
+    url: "https://jobs.ashbyhq.com/marshmallow"
+    parser: ashby
+
+  - name: "Lendable"
+    url: "https://jobs.ashbyhq.com/lendable"
+    parser: ashby
+
+  - name: "GoCardless"
+    url: "https://job-boards.greenhouse.io/gocardless"
+    parser: greenhouse
+
+  - name: "Paysafe"
+    url: "https://jobs.paysafe.com/"
+
+  # --- New additions: payments / e-commerce ---
+
+  - name: "PayPal"
+    url: "https://careers.pypl.com/home/"
+
+  - name: "ASOS"
+    url: "https://careers.smartrecruiters.com/ASOS"
+
+  - name: "Trustpilot"
+    url: "https://job-boards.greenhouse.io/trustpilot"
+    parser: greenhouse
+
+  # --- New additions: travel / entertainment ---
+
+  - name: "Airbnb"
+    url: "https://boards.greenhouse.io/airbnb"
+    parser: greenhouse
+
+  - name: "Expedia Group"
+    url: "https://careers.expediagroup.com/jobs/"
+
+  - name: "Skyscanner"
+    url: "https://www.skyscanner.com/jobs/current-jobs"
+
+  - name: "British Airways"
+    url: "https://careers.ba.com/search-jobs"
+
+  - name: "PlayStation"
+    url: "https://job-boards.greenhouse.io/sonyinteractiveentertainmentglobal"
+    parser: greenhouse
+
+  # --- New additions: retail / consumer ---
+
+  - name: "Marks & Spencer"
+    url: "https://jobs.marksandspencer.com/job-search"
+
+  - name: "LEGO Group"
+    url: "https://lego.wd103.myworkdayjobs.com/LEGO_External"
+
+  # --- New additions: banks / enterprise ---
+
+  - name: "Deutsche Bank"
+    url: "https://db.wd3.myworkdayjobs.com/DBWebsite"
+
+  - name: "IBM"
+    url: "https://ibmglobal.avature.net/en_US/careers/OpenJobs"
+
+  - name: "Sky"
+    url: "https://careers.sky.com/jobs"
+
+  # --- New additions: AI / edtech / other ---
+
+  - name: "Perplexity AI"
+    url: "https://jobs.ashbyhq.com/perplexity"
+    parser: ashby
+
+  - name: "Preply"
+    url: "https://job-boards.greenhouse.io/preply"
+    parser: greenhouse
+
+  - name: "TikTok"
+    url: "https://lifeattiktok.com/search"
+
+  - name: "Trainline"
+    url: "https://jobs.ashbyhq.com/trainline"
+    parser: ashby
+
+  # --- Banks: UK retail (strong CRM / propensity / credit fit) ---
+
+  - name: "Lloyds Banking Group"
+    url: "https://lbg.wd3.myworkdayjobs.com/LBG_Careers"
+
+  - name: "NatWest Group"
+    url: "https://jobs.natwestgroup.com/search/jobs"
+
+  - name: "Santander UK"
+    url: "https://santander.wd3.myworkdayjobs.com/en/SantanderCareers"
+
+  - name: "Nationwide"
+    url: "https://dnn.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/Nationwide/jobs"
+
+  - name: "Standard Chartered"
+    url: "https://jobs.standardchartered.com/"
+
+  - name: "OakNorth Bank"
+    url: "https://jobs.lever.co/oaknorth.ai"
+    parser: lever
+
+  # --- Banks: investment / global (London DS teams) ---
+
+  - name: "Morgan Stanley"
+    url: "https://morganstanley.eightfold.ai/careers"
+
+  - name: "UBS"
+    url: "https://www.ubs.com/global/en/careers/search-jobs.html"
+
+  - name: "Macquarie"
+    url: "https://recruitment.macquarie.com/en_US/careers/SearchJobs"
+
+  - name: "BNP Paribas"
+    url: "https://group.bnpparibas/en/careers/all-job-offers/london"
+
+  # --- Credit bureaus / data-driven finance (strong profile match) ---
+
+  - name: "Experian"
+    url: "https://jobs.experian.com/jobs"
+
+  - name: "Equifax"
+    url: "https://careers.equifax.com/en/jobs/"
+
+  - name: "Capital One UK"
+    url: "https://jobs.capitalone.co.uk/category/data-science-jobs/1734/8161296/1"
+
+  # --- Payments infrastructure (fintech DS fit) ---
+
+  - name: "Adyen"
+    url: "https://careers.adyen.com/vacancies"
+    parser: greenhouse
+
+  - name: "Stripe"
+    url: "https://stripe.com/jobs"

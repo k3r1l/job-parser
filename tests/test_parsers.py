@@ -1,0 +1,93 @@
+from unittest.mock import MagicMock, call, patch
+
+import pytest
+import requests
+from bs4 import BeautifulSoup
+
+from src.parsers.base import fetch_page, parse_generic
+
+
+def _mock_response(html: str) -> MagicMock:
+    resp = MagicMock()
+    resp.text = html
+    resp.raise_for_status = MagicMock()
+    return resp
+
+
+class TestFetchPage:
+    def test_returns_soup_on_success(self):
+        resp = _mock_response("<html><body><p>OK</p></body></html>")
+        with patch("requests.get", return_value=resp):
+            result = fetch_page("https://example.com", "Test")
+        assert result is not None
+        assert result.find("p").text == "OK"
+
+    def test_retries_on_failure_then_succeeds(self):
+        resp = _mock_response("<html><body>OK</body></html>")
+        with patch("requests.get", side_effect=[requests.RequestException("timeout"), resp]):
+            with patch("time.sleep") as mock_sleep:
+                result = fetch_page("https://example.com", "Test", retries=2)
+        assert result is not None
+        assert mock_sleep.call_count == 1
+
+    def test_returns_none_after_all_retries_exhausted(self):
+        with patch("requests.get", side_effect=requests.RequestException("timeout")):
+            with patch("time.sleep"):
+                result = fetch_page("https://example.com", "Test", retries=3)
+        assert result is None
+
+    def test_correct_number_of_attempts(self):
+        with patch("requests.get", side_effect=requests.RequestException("err")) as mock_get:
+            with patch("time.sleep"):
+                fetch_page("https://example.com", "Test", retries=3)
+        assert mock_get.call_count == 3
+
+    def test_no_retry_on_retries_equals_1(self):
+        with patch("requests.get", side_effect=requests.RequestException("err")) as mock_get:
+            with patch("time.sleep") as mock_sleep:
+                fetch_page("https://example.com", "Test", retries=1)
+        assert mock_get.call_count == 1
+        mock_sleep.assert_not_called()
+
+
+class TestParseGeneric:
+    def test_returns_matching_jobs(self):
+        html = '<a href="/jobs/senior-data-scientist">Senior Data Scientist - London</a>'
+        soup = BeautifulSoup(html, "lxml")
+        with patch("src.parsers.base.fetch_page", return_value=soup):
+            jobs, ok = parse_generic("TestCo", "https://testco.com/careers")
+        assert ok is True
+        assert len(jobs) == 1
+        assert jobs[0].title == "Senior Data Scientist - London"
+        assert jobs[0].company == "TestCo"
+
+    def test_filters_irrelevant_jobs(self):
+        html = '<a href="/jobs/pm">Product Manager</a>'
+        soup = BeautifulSoup(html, "lxml")
+        with patch("src.parsers.base.fetch_page", return_value=soup):
+            jobs, ok = parse_generic("TestCo", "https://testco.com/careers")
+        assert ok is True
+        assert jobs == []
+
+    def test_returns_fetch_failed_on_none(self):
+        with patch("src.parsers.base.fetch_page", return_value=None):
+            jobs, ok = parse_generic("TestCo", "https://testco.com/careers")
+        assert ok is False
+        assert jobs == []
+
+    def test_deduplicates_urls(self):
+        html = (
+            '<a href="/jobs/senior-data-scientist">Senior Data Scientist</a>'
+            '<a href="/jobs/senior-data-scientist">Senior Data Scientist</a>'
+        )
+        soup = BeautifulSoup(html, "lxml")
+        with patch("src.parsers.base.fetch_page", return_value=soup):
+            jobs, _ = parse_generic("TestCo", "https://testco.com")
+        assert len(jobs) == 1
+
+    def test_resolves_relative_urls(self):
+        html = '<a href="/jobs/lead-data-scientist">Lead Data Scientist</a>'
+        soup = BeautifulSoup(html, "lxml")
+        with patch("src.parsers.base.fetch_page", return_value=soup):
+            jobs, _ = parse_generic("TestCo", "https://testco.com/careers")
+        assert jobs[0].url.startswith("https://testco.com")
