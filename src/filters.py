@@ -19,8 +19,14 @@ LOCATION_KEYWORDS = [
     "hybrid",
 ]
 
-# Explicit non-UK location signals — if any appear in the job text, reject the role.
-# Ordered roughly by frequency in job postings.
+# If any of these appear in the text, the role is explicitly in the UK → always keep.
+_UK_MARKERS = {
+    "london", "united kingdom", "england", "wales", "scotland",
+    "cardiff", "manchester", "edinburgh", "birmingham", "leeds", "bristol",
+    "remote (uk)", "remote - uk", "hybrid (uk)", "(uk)", "uk only",
+}
+
+# Non-UK location signals. Only used to reject if NO UK marker is also present.
 _NON_UK_MARKERS = {
     # USA cities
     "san francisco", "new york", "los angeles", "seattle", "sunnyvale",
@@ -55,9 +61,16 @@ def is_relevant_title(title: str) -> bool:
 
 
 def is_uk_relevant(text: str) -> bool:
-    """Return False if text explicitly names a non-UK location."""
+    """
+    Return False only when text names a non-UK location AND no UK location is present.
+    Roles listed as 'London or Lisbon' are kept; 'Lisbon only' roles are dropped.
+    """
     t = text.lower()
-    return not any(marker in t for marker in _NON_UK_MARKERS)
+    if any(marker in t for marker in _UK_MARKERS):
+        return True   # UK explicitly present — keep regardless of other cities
+    if any(marker in t for marker in _NON_UK_MARKERS):
+        return False  # non-UK only
+    return True       # no location info — keep (scorer applies mild penalty)
 
 
 def is_relevant_location(text: str) -> bool:

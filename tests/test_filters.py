@@ -39,15 +39,17 @@ class TestIsRelevantLocation:
 
 
 class TestIsUkRelevant:
+    # UK-only → keep
     def test_london_passes(self):
         assert is_uk_relevant("Senior Data Scientist London, UK")
 
-    def test_uk_remote_passes(self):
+    def test_cardiff_london_remote_passes(self):
         assert is_uk_relevant("Lead ML Engineer Cardiff, London or Remote (UK)")
 
     def test_no_location_passes(self):
         assert is_uk_relevant("Senior Data Scientist")
 
+    # Non-UK only → reject
     def test_san_francisco_rejected(self):
         assert not is_uk_relevant("ML Engineer San Francisco, CA")
 
@@ -65,3 +67,16 @@ class TestIsUkRelevant:
 
     def test_united_states_rejected(self):
         assert not is_uk_relevant("Senior DS United States, Los Angeles, CA")
+
+    # Multi-city with London → keep (the key case)
+    def test_london_or_lisbon_kept(self):
+        assert is_uk_relevant("Senior Data Scientist London, UK or Lisbon, Portugal")
+
+    def test_london_or_riga_kept(self):
+        assert is_uk_relevant("Senior Data Scientist, Fraud Prevention London, UK | Riga, Latvia")
+
+    def test_london_or_sf_kept(self):
+        assert is_uk_relevant("Lead ML Engineer London or San Francisco")
+
+    def test_england_with_other_cities_kept(self):
+        assert is_uk_relevant("Principal DS England / Germany")
