@@ -86,3 +86,19 @@ def format_daily_summary(total_new: int, total_removed: int) -> str:
     if not parts:
         return "✅ Daily job check complete — no changes found."
     return f"📋 Daily job check complete — {' · '.join(parts)} across all companies."
+
+
+def format_company_snapshot(stored: dict) -> str:
+    counts = {
+        company: sum(1 for j in jobs.values() if j.get("status") == "active")
+        for company, jobs in stored.items()
+    }
+    active = {c: n for c, n in counts.items() if n > 0}
+    if not active:
+        return "📊 No active vacancies tracked yet."
+
+    total = sum(active.values())
+    lines = [f"<b>📊 Active vacancies — {total} total across {len(active)} companies</b>"]
+    for company, count in sorted(active.items(), key=lambda x: x[1], reverse=True):
+        lines.append(f"• {company}: {count}")
+    return "\n".join(lines)

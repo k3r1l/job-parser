@@ -1,4 +1,5 @@
 from src.notifier import (
+    format_company_snapshot,
     format_daily_summary,
     format_fetch_errors,
     format_new_jobs,
@@ -68,3 +69,36 @@ class TestFormatFetchErrors:
         assert "Monzo" in msg
         assert "Klarna" in msg
         assert "companies.yml" in msg
+
+
+class TestFormatCompanySnapshot:
+    def _stored(self, active_by_company: dict) -> dict:
+        stored = {}
+        for company, count in active_by_company.items():
+            stored[company] = {
+                f"id{i}": {"status": "active"} for i in range(count)
+            }
+        return stored
+
+    def test_shows_company_and_count(self):
+        msg = format_company_snapshot(self._stored({"Monzo": 3, "Wise": 7}))
+        assert "Monzo: 3" in msg
+        assert "Wise: 7" in msg
+
+    def test_sorted_descending(self):
+        msg = format_company_snapshot(self._stored({"Monzo": 2, "Wise": 10, "Revolut": 5}))
+        assert msg.index("Wise") < msg.index("Revolut") < msg.index("Monzo")
+
+    def test_shows_total(self):
+        msg = format_company_snapshot(self._stored({"Monzo": 3, "Wise": 7}))
+        assert "10" in msg
+
+    def test_excludes_companies_with_zero_active(self):
+        stored = self._stored({"Monzo": 3})
+        stored["DeadCo"] = {"id0": {"status": "removed"}}
+        msg = format_company_snapshot(stored)
+        assert "DeadCo" not in msg
+
+    def test_empty_storage(self):
+        msg = format_company_snapshot({})
+        assert "No active" in msg

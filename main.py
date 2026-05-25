@@ -5,6 +5,7 @@ from pathlib import Path
 import yaml
 
 from src.notifier import (
+    format_company_snapshot,
     format_daily_summary,
     format_fetch_errors,
     format_new_jobs,
@@ -88,6 +89,7 @@ def run() -> None:
         logger.warning("Fetch failures: %s", fetch_failed)
         send_message(format_fetch_errors(fetch_failed))
 
+    send_message(format_company_snapshot(stored))
     send_message(format_daily_summary(total_new, total_removed))
     logger.info("Done. new=%d removed=%d failed=%d", total_new, total_removed, len(fetch_failed))
 

@@ -12,8 +12,9 @@ companies:
     url: "https://job-boards.greenhouse.io/monzo"
     parser: greenhouse
 
-  - name: "Klarna"
-    url: "https://www.klarna.com/careers/openings/"
+  # Klarna: moved to Deel job board (jobs.deel.com/klarna) — JS-rendered SPA, no public API
+  # - name: "Klarna"
+  #   url: "https://jobs.deel.com/klarna"
 
   - name: "Cleo"
     url: "https://apply.workable.com/cleo-ai/"
@@ -200,9 +201,9 @@ companies:
     url: "https://jobs.ashbyhq.com/perplexity"
     parser: ashby
 
-  - name: "Preply"
-    url: "https://job-boards.greenhouse.io/preply"
-    parser: greenhouse
+  # Preply: migrated from Greenhouse to Ashby embedded on own domain — no public Ashby board
+  # - name: "Preply"
+  #   url: "https://preply.com/en/careers"
 
   - name: "TikTok"
     url: "https://lifeattiktok.com/search"
